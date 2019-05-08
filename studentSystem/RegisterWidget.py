@@ -1,8 +1,12 @@
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import QFont
+from PyQt5.QtCore import pyqtSignal
 
 
 class RegisterWidget(QWidget):
+    
+    # 创建一个信号
+    register_success = pyqtSignal()
 
     def __init__(self):
         super(RegisterWidget, self).__init__()
@@ -32,4 +36,10 @@ class RegisterWidget(QWidget):
         formlayout.addRow("昵称", self.user_nicknameEdit)
         # 添加注册按钮
         button = QPushButton("注册")
+        button.clicked.connect(self.register)
         formlayout.addRow("", button)
+
+    def register(self):
+        print('假装注册成功')
+        # 对外发送一个注册成功的信号：
+        self.register_success.emit()

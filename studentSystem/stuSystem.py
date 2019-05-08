@@ -34,11 +34,15 @@ class StuSystem:
         sys.exit(app.exec())
 
     def show_login(self):
-        print('打开登陆页面')
+        from LoginWidget import LoginWidget
+        loginwidget = LoginWidget()
+        self.mainwindow.setCentralWidget(loginwidget)
 
     def show_register(self):
         from RegisterWidget import RegisterWidget
         registerWidget = RegisterWidget()
+        # 绑定信号和槽
+        registerWidget.register_success.connect(self.show_login)
         self.mainwindow.setCentralWidget(registerWidget)
 
 
