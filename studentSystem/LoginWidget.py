@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import QFont
 from PyQt5.QtCore import pyqtSignal
+from pymysql import connect
 
 
 class LoginWidget(QWidget):
-
     # 定义一个信号
     login_success = pyqtSignal()
 
@@ -38,5 +38,18 @@ class LoginWidget(QWidget):
         formlayout.addRow("", button)
 
     def login_Success(self):
-        # 对外发送一个登陆成功的信号
-        self.login_success.emit()
+        # 获取登陆名
+        name = self.user_nameEdit.text()
+        # 获取登陆密码
+        password = self.user_passwordEdit.text()
+        # 创建连接
+        conn = connect(host='localhost', port=3306, user='root', password='123456', database='stusystem')
+        cursor = conn.cursor()
+        sql = 'select * from user where username=%s and user_password=%s'
+        ret= cursor.execute(sql, [name, password])
+        if ret == 1:
+            print('登陆成功')
+            # 对外发送一个登陆成功的信号
+            self.login_success.emit()
+        else:
+            print('登陆失败')
