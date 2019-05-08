@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.Qt import QFont
 from PyQt5.QtCore import pyqtSignal
 from pymysql import connect
+import hashlib
 
 
 class LoginWidget(QWidget):
@@ -42,11 +43,15 @@ class LoginWidget(QWidget):
         name = self.user_nameEdit.text()
         # 获取登陆密码
         password = self.user_passwordEdit.text()
+        # 对密码进行加密
+        salt = '@#$%'
+        password += salt
+        md5_password = hashlib.md5(password.encode()).hexdigest()
         # 创建连接
         conn = connect(host='localhost', port=3306, user='root', password='123456', database='stusystem')
         cursor = conn.cursor()
         sql = 'select * from user where username=%s and user_password=%s'
-        ret= cursor.execute(sql, [name, password])
+        ret= cursor.execute(sql, [name, md5_password])
         if ret == 1:
             print('登陆成功')
             # 对外发送一个登陆成功的信号

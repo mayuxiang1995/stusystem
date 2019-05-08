@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.Qt import QFont
 from PyQt5.QtCore import pyqtSignal
 from pymysql import connect
+import hashlib
 
 
 class RegisterWidget(QWidget):
@@ -46,11 +47,15 @@ class RegisterWidget(QWidget):
         user_password = self.user_passwordEdit.text()
         # 获取注册的昵称
         user_nickname = self.user_nicknameEdit.text()
+        # 给密码加盐加密
+        salt = '@#$%'
+        user_password = user_password + salt
+        md5_userpassword = hashlib.md5(user_password.encode()).hexdigest()
         # 连接数据库将信息传入
         conn = connect(host='localhost', port=3306, user='root', password='123456', database='stusystem')
         cursor = conn.cursor()
         sql = 'insert into user values(null,%s,%s,%s)'
-        ret = cursor.execute(sql, [user_name, user_password, user_nickname])
+        ret = cursor.execute(sql, [user_name, md5_userpassword, user_nickname])
         if ret == 1:
             print("注册成功")
             # 对外发送一个注册成功的信号：
@@ -60,4 +65,3 @@ class RegisterWidget(QWidget):
         conn.commit()
         cursor.close()
         conn.close()
-
