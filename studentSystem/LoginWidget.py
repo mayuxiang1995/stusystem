@@ -1,8 +1,12 @@
 from PyQt5.QtWidgets import *
 from PyQt5.Qt import QFont
+from PyQt5.QtCore import pyqtSignal
 
 
 class LoginWidget(QWidget):
+
+    # 定义一个信号
+    login_success = pyqtSignal()
 
     def __init__(self):
         super(LoginWidget, self).__init__()
@@ -30,4 +34,9 @@ class LoginWidget(QWidget):
         formlayout.addRow("密码", self.user_passwordEdit)
         # 添加注册按钮
         button = QPushButton("登陆")
+        button.clicked.connect(self.login_Success)
         formlayout.addRow("", button)
+
+    def login_Success(self):
+        # 对外发送一个登陆成功的信号
+        self.login_success.emit()

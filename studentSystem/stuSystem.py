@@ -33,9 +33,14 @@ class StuSystem:
         # 让应用一直出与运行状态
         sys.exit(app.exec())
 
+    def show_information(self):
+        print('显示信息')
+
     def show_login(self):
         from LoginWidget import LoginWidget
         loginwidget = LoginWidget()
+        # 绑定信号和槽
+        loginwidget.login_success.connect(self.show_information)
         self.mainwindow.setCentralWidget(loginwidget)
 
     def show_register(self):
