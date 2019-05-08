@@ -1,10 +1,13 @@
 from PyQt5.QtWidgets import *
 import sys
+from pymysql import connect
 
 
 class StuSystem:
 
     def __init__(self):
+
+        self.init_database()
         # 创建QApplication
         app = QApplication(sys.argv)
 
@@ -51,6 +54,43 @@ class StuSystem:
         # 绑定信号和槽
         registerWidget.register_success.connect(self.show_login)
         self.mainwindow.setCentralWidget(registerWidget)
+
+    def init_database(self):
+        """
+        项目初始：创建数据库，创建用户，只希望用户操作此数据库的内容，需要给用户限制权限
+        :return: 
+        """
+        # 首先创建连接
+        conn = connect(host="localhost", port=3306, user="root", password="123456")
+        cursor = conn.cursor()
+        # 首先创建数据库
+        sql = 'create database if not exists stusystem'
+        cursor.execute(sql)
+        # 选择数据库
+        cursor.execute('use stusystem')
+        # 创建存储管理员账号信息的表
+        sql = """
+            create table if not exists user(
+                id int primary key auto_increment,
+                username varchar(20),
+                user_password varchar(50),
+                nickname varchar(20)
+            )
+        """
+        cursor.execute(sql)
+        # 创建存储学生信息的表
+        sql = """
+            create table if not exists student(
+                id int primary key auto_increment,
+                name varchar(20),
+                age int,
+                gender varchar(20)           
+            )
+        """
+        cursor.execute(sql)
+        # 释放资源
+        cursor.close()
+        conn.close()
 
 
 if __name__ == '__main__':
