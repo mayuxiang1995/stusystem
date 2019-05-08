@@ -26,7 +26,7 @@ class StuSystem:
         register_action.triggered.connect(self.show_register)
         menu.addAction(register_action)
         # 默认显示注册界面
-        self.show_register()
+        self.show_information()
 
         # 让窗口显示出来
         self.mainwindow.show()
@@ -34,7 +34,9 @@ class StuSystem:
         sys.exit(app.exec())
 
     def show_information(self):
-        print('显示信息')
+        from InformationWidget import InformationWidget
+        informationWidget = InformationWidget()
+        self.mainwindow.setCentralWidget(informationWidget)
 
     def show_login(self):
         from LoginWidget import LoginWidget
